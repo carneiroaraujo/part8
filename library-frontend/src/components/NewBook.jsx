@@ -10,6 +10,10 @@ const NewBook = () => {
 
   const [addBook] = useMutation(ADD_BOOK, {
     refetchQueries: [{ query: ALL_BOOKS }]
+    // update: (cache, response) => {
+      // cache.restore
+      // cache.updateQuery({query: ALL_BOOKS, variables:{response.data.addBook.genr}})
+    // }
   })
 
   const submit = async (event) => {

@@ -17,10 +17,17 @@ export default function PersonForm({setError}) {
   const city = useField()
 
   const [createPerson] = useMutation(CREATE_PERSON, {
-    refetchQueries: [{query: ALL_PERSONS}],
+    // refetchQueries: [{query: ALL_PERSONS}],
     onError: error => {
       const messages = error.graphQLErrors.map(e => e.message).join("\n")
       setError(messages)
+    },
+    update: (cache, response) => {
+      cache.updateQuery({query: ALL_PERSONS}, ({allPersons}) => {
+        return {
+          allPersons: allPersons.concat(response.data.addPerson)
+        }
+      })
     }
   })
 
@@ -29,7 +36,7 @@ export default function PersonForm({setError}) {
     createPerson({
       variables: {
         name: name.value,
-        phone: phone.value,
+        phone: phone.value || undefined,
         street: street.value,
         city: city.value,
       }
